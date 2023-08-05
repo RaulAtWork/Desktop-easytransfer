@@ -3,6 +3,11 @@ import React, { useState } from "react";
 export default function Send() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+    function handleSubmit(event){
+        event.preventDefault()
+
+    }
+
   const advancedConfiguration = (
     <div>
       <h2>Advanced Configuration</h2>
@@ -39,7 +44,7 @@ export default function Send() {
           Show Advanced Configuration
         </button>
         {showAdvanced && advancedConfiguration }
-        <button type="submit">Send!</button>
+        <button type="submit" onClick={handleSubmit}>Send!</button>
       </form>
     </>
   );
