@@ -1,0 +1,11 @@
+@import './reset.css';
+@import './water.css';
+
+.form{
+    display: flex;
+    flex-direction: column;
+}
+
+button{
+    width: fit-content;
+}
