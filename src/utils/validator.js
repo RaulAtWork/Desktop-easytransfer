@@ -1,3 +1,9 @@
+export const VALIDATION_MESSAGES = {
+  CHUNK: "Chunk size must be greater than 0.",
+  PORT: "Port must be between 1000 and 9999.",
+  IPADDRESS: "IP address is not valid.",
+};
+
 /**
  * Validates if an IP address has a valid format
  * @param {string} ipAddress IP address to validate
@@ -14,7 +20,7 @@ export function isValidIPAddress(ipAddress) {
  * @returns {boolean} true if allowed, false if not
  */
 export function isValidChunkSize(chunkSize) {
-  if (chunkSize > 0) return true; //FIXME
+  if (chunkSize > 0) return true;
   else return false;
 }
 
@@ -24,6 +30,6 @@ export function isValidChunkSize(chunkSize) {
  * @returns true if valid, false if not
  */
 export function isValidPort(port) {
-  if (port > 0) return true; //FIXME
+  if (port >= 1000 && port <= 9999) return true;
   else return false;
 }

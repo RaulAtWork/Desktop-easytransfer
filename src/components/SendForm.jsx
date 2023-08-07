@@ -1,98 +1,120 @@
-import React from "react";
+import { Formik } from "formik";
+import React, { useState } from "react";
+import { VALIDATION_MESSAGES, isValidChunkSize, isValidIPAddress, isValidPort } from "../utils/validator";
+import * as Yup from "yup";
+import ErrorMessage from "./Error";
+import cn from "classnames";
 
-export default function SendForm() {
+export function SendForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [formInput, setFormInput] = useState({
-    IP: "",
-    folder: "",
-    files: [],
-    chunkSize: "",
-    port: null,
+
+  const validationSchema = Yup.object().shape({
+    IP: Yup.string()
+    .required("IP address is required")
+    .test("IP Address Format", VALIDATION_MESSAGES.IPADDRESS, isValidIPAddress),
+    folder: Yup.string().required("Destination folder is required"),
+    files: Yup.string().required("Select at least one file"),
+    port: Yup.number().required("A port must be provided.").test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
+    chunkSize: Yup.number().required("A chunk size must be provided").test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize)
   });
 
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
-  function handleChange(event) {
-    setFormInput({ ...formInput, [event.target.name]: event.target.value });
+  function handleSubmit() {
+    console.log("Form submitted");
   }
 
   return (
-    <>
-      {/* Start of the form*/}
-      <form className="form" onSubmit={handleSubmit}>
-
-        {/*IP address*/}
-        <label>
-          Destination IP
+    <Formik
+      initialValues={{ IP: "", folder: "", files: "", port: 4040, chunkSize: 100 }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ values, errors, touched, handleChange, handleSubmit }) => (
+        <form className="form" on onSubmit={handleSubmit}>
+          {/* Destination IP*/}
+          <label htmlFor="IP">IP</label>
           <input
             type="text"
-            name="IP"
-            value={formInput.IP}
+            id="IP"
+            value={values.IP}
             onChange={handleChange}
+            className={cn({
+              "is-invalid": touched.IP && errors.IP,
+              "is-valid": touched.IP && !errors.IP,
+            })}
           ></input>
-        </label>
+          <ErrorMessage touched={touched.IP} error={errors.IP} />
 
-        {/*Destination Folder*/}
-        <label>
-          Destination Folder{" "}
+          {/*Destination Folder*/}
+          <label htmlFor="folder">Destination Folder </label>
+          <input
+            id="folder"
+            type="text"
+            value={values.folder}
+            onChange={handleChange}
+            className={cn({
+              "is-invalid": touched.folder && errors.folder,
+              "is-valid": touched.files && !errors.folder,
+            })}
+          ></input>
+          <ErrorMessage touched={touched.folder} error={errors.folder} />
+
+          {/*Files to transfer*/}
+          <label htmlFor="files">Files to transfer</label>
           <input
             type="text"
-            name="folder"
-            value={formInput.folder}
+            id="files"
+            value={values.files}
             onChange={handleChange}
+            className={cn({
+              "is-invalid": touched.files && errors.files,
+              "is-valid": touched.files && !errors.files,
+            })}
           ></input>
-        </label>
+          <ErrorMessage touched={touched.files} error={errors.files} />
 
-        {/*Files to transfer*/}
-        <label>
-          Files to transfer
-          <input
-            type="text"
-            name="files"
-            value={formInput.files}
-            onChange={handleChange}
-          ></input>
-        </label>
-
-        {/*Advanced options*/}
-        <button
-          onClick={(event) => {
-            event.preventDefault(); //this prevents the form from submitting
-            setShowAdvanced(!showAdvanced);
-          }}
-        >
-          Show Advanced Configuration
-        </button>
-        {showAdvanced && (
-          <div>
-            <h2>Advanced Configuration</h2>
-            <label>
-              Chunk size (MB)
+          {/*Advanced options*/}
+          <button
+            onClick={(event) => {
+              event.preventDefault(); //this prevents the form from submitting
+              setShowAdvanced(!showAdvanced);
+            }}
+          >
+            Show Advanced Configuration
+          </button>
+          {showAdvanced && (
+            <div>
+              <h2>Advanced Configuration</h2>
+              <label htmlFor="chunkSize">Chunk size (MB)</label>
               <input
                 type="number"
-                min="0"
-                name="chunkSize"
-                value={formInput.chunkSize}
+                id="chunkSize"
+                value={values.chunkSize}
                 onChange={handleChange}
+                className={cn({
+                  "is-invalid": touched.chunkSize && errors.chunkSize,
+                  "is-valid": touched.chunkSize && !errors.chunkSize,
+                })}
               ></input>
-            </label>
-            <label>
-              Destination Port
+              <ErrorMessage touched={touched.chunkSize} error={errors.chunkSize} />
+
+              <label htmlFor="port">Destination Port</label>
               <input
                 type="number"
-                name="port"
-                value={formInput.port}
+                id="port"
+                value={values.port}
                 onChange={handleChange}
+                className={cn({
+                  "is-invalid": touched.port && errors.port,
+                  "is-valid": touched.port && !errors.port,
+                })}
               ></input>
-            </label>
-          </div>
-        )}
+              <ErrorMessage touched={touched.port} error={errors.port} />
+            </div>
+          )}
 
-        <button type="submit">Send!</button>
-
-        {JSON.stringify(formInput)}
-      </form>
-    </>
+          <button type="submit" className="w-100">Send!</button>
+        </form>
+      )}
+    </Formik>
   );
 }
