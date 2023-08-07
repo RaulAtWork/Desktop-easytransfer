@@ -1,11 +1,42 @@
 @import './reset.css';
 @import './water.css';
 
+:root{
+    --color-error: #dc3545;
+    --color-success: #28a745;
+}
+
+
+/*GLOBALS*/
+
+button{
+    width: fit-content;
+}
+
+/*OTHERS*/
+
 .form{
     display: flex;
     flex-direction: column;
 }
 
-button{
-    width: fit-content;
+
+.invalid-msg{
+ width: 100%;
+ margin-top: .25rem;
+ font-size: .85em;
+ color: var(--color-error);
+
+}
+
+.is-valid{
+    border: .15em solid var(--color-success);
+}
+
+.is-invalid{
+    border: .15em solid var(--color-error);
+}
+
+.w-100{
+    width: 100%;
 }
