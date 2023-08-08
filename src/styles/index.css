@@ -4,6 +4,7 @@
 :root{
     --color-error: #dc3545;
     --color-success: #28a745;
+    --color-grey: grey;
 }
 
 
@@ -11,6 +12,19 @@
 
 button{
     width: fit-content;
+}
+
+/*SINGLE CLASS MODIFICATORS*/
+.w-100{
+    width: 100%;
+}
+
+.mr-1x{
+    margin-right: 0.5rem;
+}
+
+.clickable{
+    cursor: pointer;
 }
 
 /*OTHERS*/
@@ -37,6 +51,23 @@ button{
     border: .15em solid var(--color-error);
 }
 
-.w-100{
-    width: 100%;
+
+
+.box-container{
+    border: 1px solid var(--color-grey);
+    border-radius: 5px;
+    padding: 5px;
+    background-color: var(--background);
+}
+
+.list-files li{
+    margin-left: 1em;
+    border: 1px solid var(--color-grey);
+    border-radius: 5px;
+    padding: 3px 0.5rem;
+    background-color: var(--background-alt);
+    margin-top: 3px;
+}
+.list-files{
+    gap: 1px;
 }

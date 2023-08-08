@@ -1,34 +1,63 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { VALIDATION_MESSAGES, isValidChunkSize, isValidIPAddress, isValidPort } from "../utils/validator";
+import {
+  VALIDATION_MESSAGES,
+  isValidChunkSize,
+  isValidIPAddress,
+  isValidPort,
+} from "../utils/validator";
 import * as Yup from "yup";
 import ErrorMessage from "./Error";
 import cn from "classnames";
+import { event } from "@tauri-apps/api";
+import FilesInput from "./FilesInput";
 
 export function SendForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const validationSchema = Yup.object().shape({
     IP: Yup.string()
-    .required("IP address is required")
-    .test("IP Address Format", VALIDATION_MESSAGES.IPADDRESS, isValidIPAddress),
+      .required("IP address is required")
+      .test(
+        "IP Address Format",
+        VALIDATION_MESSAGES.IPADDRESS,
+        isValidIPAddress
+      ),
     folder: Yup.string().required("Destination folder is required"),
-    files: Yup.string().required("Select at least one file"),
-    port: Yup.number().required("A port must be provided.").test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
-    chunkSize: Yup.number().required("A chunk size must be provided").test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize)
+    files: Yup.array().min(1, "Select at least one file"),
+    port: Yup.number()
+      .required("A port must be provided.")
+      .test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
+    chunkSize: Yup.number()
+      .required("A chunk size must be provided")
+      .test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize),
   });
 
-  function handleSubmit() {
+  function handleSubmit(values) {
     console.log("Form submitted");
+    console.log(values);
   }
 
   return (
     <Formik
-      initialValues={{ IP: "", folder: "", files: "", port: 4040, chunkSize: 100 }}
+      initialValues={{
+        IP: "",
+        folder: "",
+        files: [],
+        port: 4040,
+        chunkSize: 100,
+      }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, errors, touched, handleChange, handleSubmit }) => (
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+      }) => (
         <form className="form" on onSubmit={handleSubmit}>
           {/* Destination IP*/}
           <label htmlFor="IP">IP</label>
@@ -60,16 +89,23 @@ export function SendForm() {
 
           {/*Files to transfer*/}
           <label htmlFor="files">Files to transfer</label>
-          <input
-            type="text"
+          <FilesInput
             id="files"
-            value={values.files}
-            onChange={handleChange}
+            onChange={(event) => {
+              setFieldValue("files", Array.from(event.currentTarget.files));
+            }}
             className={cn({
               "is-invalid": touched.files && errors.files,
               "is-valid": touched.files && !errors.files,
             })}
-          ></input>
+            fileList={values.files}
+            removeFile={(index) => {
+              setFieldValue(
+                "files",
+                values.files.filter((_, i) => i != index)
+              );
+            }}
+          />
           <ErrorMessage touched={touched.files} error={errors.files} />
 
           {/*Advanced options*/}
@@ -95,7 +131,10 @@ export function SendForm() {
                   "is-valid": touched.chunkSize && !errors.chunkSize,
                 })}
               ></input>
-              <ErrorMessage touched={touched.chunkSize} error={errors.chunkSize} />
+              <ErrorMessage
+                touched={touched.chunkSize}
+                error={errors.chunkSize}
+              />
 
               <label htmlFor="port">Destination Port</label>
               <input
@@ -112,7 +151,9 @@ export function SendForm() {
             </div>
           )}
 
-          <button type="submit" className="w-100">Send!</button>
+          <button type="submit" className="w-100">
+            Send!
+          </button>
         </form>
       )}
     </Formik>

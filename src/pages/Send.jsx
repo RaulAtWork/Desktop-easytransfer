@@ -3,7 +3,7 @@ import {SendForm} from "../components/SendForm";
 
 export default function Send() {
   return(<>
-    <h1>SEND MODE</h1>
+    <h1>TRANSMISSION MODE</h1>
     <SendForm/>
   </>)
 }
