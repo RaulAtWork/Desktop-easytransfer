@@ -10,16 +10,15 @@ export default function FilesInput({
   removeFile,
 }) {
   return (
-    <div className="box-container">
+    <div className={"box-container "+className}>
       <input //FIXME: when deleting files the file count is not updatedº
         type="file"
         multiple
         id={id}
         onChange={onChange}
-        className={className}
       ></input>
-      <ul className="list-files">
-        {fileList.map((file, index) => (
+      <ul className="list-files"> 
+        {fileList.map((file, index) => (//TODO limit the heigh to x and use scrolling
           <li key={file.name + index}>
             <FontAwesomeIcon
               icon={faTrash}

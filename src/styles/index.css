@@ -44,11 +44,11 @@ button{
 }
 
 .is-valid{
-    border: .15em solid var(--color-success);
+    border: .15em solid var(--color-success) !important;
 }
 
 .is-invalid{
-    border: .15em solid var(--color-error);
+    border: .15em solid var(--color-error) !important;
 }
 
 
