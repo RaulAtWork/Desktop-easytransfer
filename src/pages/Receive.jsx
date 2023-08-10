@@ -1,14 +1,34 @@
 import React, { useState } from "react";
 import ProgressBar from "../components/ProgressBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSatelliteDish } from "@fortawesome/free-solid-svg-icons";
 
-
-export default function Receive(){
-    const [progress, setProgress] = useState(0)
-    return(
-        <>
-        <h1>Receive mode</h1>
-        <ProgressBar progress={progress}/>
-        <input type="range" min='0' max='100' step='5' value={progress} style={{width:"100%"}} onChange={(event) => {setProgress(event.target.value)}}></input>
-        </>
-    )
+export default function Receive() {
+  const [progress, setProgress] = useState(0);
+  return (
+    <>
+      <div className="flex-row color-receive">
+        <h1 className="color-receive">RECEIVE MODE</h1>{" "}
+        <FontAwesomeIcon
+          icon={faSatelliteDish}
+          flip="horizontal"
+          className="icon-big ml-auto"
+        />
+      </div>
+      <div className="form">
+        <ProgressBar progress={progress} />
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="5"
+          value={progress}
+          style={{ width: "100%" }}
+          onChange={(event) => {
+            setProgress(event.target.value);
+          }}
+        ></input>
+      </div>
+    </>
+  );
 }
