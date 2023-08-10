@@ -68,7 +68,7 @@ button{
   }
 
   .toggle-button.on{
-    background-color: green;
+    background-color: var(--selection);
   }
 
   .toggle-container{
