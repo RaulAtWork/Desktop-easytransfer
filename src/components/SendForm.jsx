@@ -7,6 +7,7 @@ import ErrorMessage from "./Error";
 import cn from "classnames";
 import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
+import { invoke } from '@tauri-apps/api/tauri'
 
 export function SendForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -14,6 +15,14 @@ export function SendForm() {
   function handleSubmit(values) {
     console.log("Form submitted");
     console.log(values);
+    let payload = {
+      ip : values.IP,
+      folder : values.folder,
+      files : values.files,
+      port: values.port,
+      chunk_size: values.chunkSize
+    };
+    invoke('send_files', payload);
   }
 
   return (
