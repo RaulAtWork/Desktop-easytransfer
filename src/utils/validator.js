@@ -1,4 +1,6 @@
-export const VALIDATION_MESSAGES = {
+import * as Yup from "yup";
+
+const VALIDATION_MESSAGES = {
   CHUNK: "Chunk size must be greater than 0.",
   PORT: "Port must be between 1000 and 9999.",
   IPADDRESS: "IP address is not valid.",
@@ -9,7 +11,7 @@ export const VALIDATION_MESSAGES = {
  * @param {string} ipAddress IP address to validate
  * @returns {boolean} true if valid, false if not
  */
-export function isValidIPAddress(ipAddress) {
+function isValidIPAddress(ipAddress) {
   const ipAddressRegex =
     /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   return ipAddressRegex.test(ipAddress);
@@ -19,7 +21,7 @@ export function isValidIPAddress(ipAddress) {
  * @param {number} chunkSize
  * @returns {boolean} true if allowed, false if not
  */
-export function isValidChunkSize(chunkSize) {
+function isValidChunkSize(chunkSize) {
   if (chunkSize > 0) return true;
   else return false;
 }
@@ -29,7 +31,21 @@ export function isValidChunkSize(chunkSize) {
  * @param {number} port
  * @returns true if valid, false if not
  */
-export function isValidPort(port) {
+function isValidPort(port) {
   if (port >= 1000 && port <= 9999) return true;
   else return false;
 }
+
+export const validationSchema = Yup.object().shape({
+  IP: Yup.string()
+    .required("IP address is required")
+    .test("IP Address Format", VALIDATION_MESSAGES.IPADDRESS, isValidIPAddress),
+  folder: Yup.string().required("Destination folder is required"),
+  files: Yup.array().min(1, "Select at least one file"),
+  port: Yup.number()
+    .required("A port must be provided.")
+    .test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
+  chunkSize: Yup.number()
+    .required("A chunk size must be provided")
+    .test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize),
+});

@@ -1,37 +1,15 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
 import {
-  VALIDATION_MESSAGES,
-  isValidChunkSize,
-  isValidIPAddress,
-  isValidPort,
+  validationSchema
 } from "../utils/validator";
-import * as Yup from "yup";
 import ErrorMessage from "./Error";
 import cn from "classnames";
-import { event } from "@tauri-apps/api";
 import FilesInput from "./FilesInput";
+import ToggleButton from "./ToggleButton";
 
 export function SendForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const validationSchema = Yup.object().shape({
-    IP: Yup.string()
-      .required("IP address is required")
-      .test(
-        "IP Address Format",
-        VALIDATION_MESSAGES.IPADDRESS,
-        isValidIPAddress
-      ),
-    folder: Yup.string().required("Destination folder is required"),
-    files: Yup.array().min(1, "Select at least one file"),
-    port: Yup.number()
-      .required("A port must be provided.")
-      .test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
-    chunkSize: Yup.number()
-      .required("A chunk size must be provided")
-      .test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize),
-  });
 
   function handleSubmit(values) {
     console.log("Form submitted");
@@ -57,8 +35,10 @@ export function SendForm() {
         handleChange,
         handleSubmit,
         setFieldValue,
+        resetForm
       }) => (
         <form className="form" on onSubmit={handleSubmit}>
+          <button type="button" onClick={resetForm}>Reset form</button>
           {/* Destination IP*/}
           <label htmlFor="IP">IP</label>
           <input
@@ -91,35 +71,29 @@ export function SendForm() {
           <label htmlFor="files">Files to transfer</label>
           <FilesInput
             id="files"
-            onChange={(event) => {
-              setFieldValue("files", Array.from(event.currentTarget.files));
+            setFileList={(newValue) => {
+              setFieldValue("files", newValue);
             }}
             className={cn({
               "is-invalid": touched.files && errors.files,
               "is-valid": touched.files && !errors.files,
             })}
             fileList={values.files}
-            removeFile={(index) => {
-              setFieldValue(
-                "files",
-                values.files.filter((_, i) => i != index)
-              );
-            }}
           />
           <ErrorMessage touched={touched.files} error={errors.files} />
 
           {/*Advanced options*/}
-          <button
-            onClick={(event) => {
-              event.preventDefault(); //this prevents the form from submitting
+
+          <ToggleButton
+            isToggled={showAdvanced}
+            label={"Show Advanced Configuration"}
+            handleToggle={() => {
               setShowAdvanced(!showAdvanced);
             }}
-          >
-            Show Advanced Configuration
-          </button>
+          />
+
           {showAdvanced && (
-            <div>
-              <h2>Advanced Configuration</h2>
+            <div className="form">
               <label htmlFor="chunkSize">Chunk size (MB)</label>
               <input
                 type="number"
@@ -150,8 +124,8 @@ export function SendForm() {
               <ErrorMessage touched={touched.port} error={errors.port} />
             </div>
           )}
-
-          <button type="submit" className="w-100">
+          <br/>
+          <button type="submit" className="w-100 button-highlight">
             Send!
           </button>
         </form>

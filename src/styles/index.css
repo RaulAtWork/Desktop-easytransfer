@@ -5,6 +5,7 @@
     --color-error: #dc3545;
     --color-success: #28a745;
     --color-grey: grey;
+    --color-higlight: #1c599e;
 }
 
 
@@ -23,15 +24,72 @@ button{
     margin-right: 0.5rem;
 }
 
+.ml-1x{
+    margin-left: .5rem
+}
+
 .clickable{
     cursor: pointer;
 }
+
+/*Colors*/
+
+.button-highlight{
+    background-color: var(--color-higlight);
+}
+
+.button-highlight:hover{
+    background-color: var(--selection);
+}
+
+/*TOGGLE BUTTON*/
+
+.toggle-button {
+    width: 60px;
+    height: 30px;
+    background-color: #312d2d;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .slider {
+    width: 26px;
+    height: 26px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .on .slider {
+    transform: translateX(30px);
+  }
+
+  .toggle-button.on{
+    background-color: green;
+  }
+
+  .toggle-container{
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+  }
+  .toggle-container label {
+    margin-left: .5rem;
+  }
+  
 
 /*OTHERS*/
 
 .form{
     display: flex;
     flex-direction: column;
+    background-color: var(--background-alt);
+    padding: .75rem;
+    border: 1px solid var(--color-grey);
+    border-radius: .5rem;
 }
 
 
@@ -54,14 +112,13 @@ button{
 
 
 .box-container{
-    border: 1px solid var(--color-grey);
+    /*border: 1px solid var(--color-grey);*/
     border-radius: 5px;
-    padding: 5px;
+    padding: .5rem;
     background-color: var(--background);
 }
 
 .list-files li{
-    margin-left: 1em;
     border: 1px solid var(--color-grey);
     border-radius: 5px;
     padding: 3px 0.5rem;
@@ -70,4 +127,17 @@ button{
 }
 .list-files{
     gap: 1px;
+    max-height: 200px;
+    overflow: auto;
+    padding: .25rem .5rem;
+}
+
+.button-look{
+    background-color: var(--button-base);
+    border-radius: .5rem;
+    cursor: pointer;
+}
+.button-look.small{
+    padding: 5px
+    ;
 }
