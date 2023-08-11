@@ -1,11 +1,13 @@
 use std::fs::File;
 use std::io::{BufReader, Read, Write};
 use std::net::TcpListener;
-use easytransfer_rs::{CHUNK_SIZE, FileInfo};
 
+use easytransfer_gui::{FileInfo, CHUNK_SIZE};
+
+#[tauri::command(rename_all = "snake_case")]
 pub fn server() {
     println!("Running server...");
-    let listener =TcpListener::bind("localhost:3287").unwrap();
+    let listener =TcpListener::bind("192.168.1.137:3287").unwrap();
     for stream in listener.incoming() {
         println!("Connection received. Parsing header...");
         // Set up buffered reader and File Info header

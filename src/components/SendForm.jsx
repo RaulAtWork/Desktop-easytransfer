@@ -18,11 +18,12 @@ export function SendForm() {
     let payload = {
       ip : values.IP,
       folder : values.folder,
-      files : values.files,
+      files : ['D:/testeo.mp4'],
       port: values.port,
       chunk_size: values.chunkSize
     };
     invoke('send_files', payload);
+    //invoke('server');
   }
 
   return (
