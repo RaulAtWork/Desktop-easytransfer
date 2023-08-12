@@ -1,7 +1,8 @@
 use std::{fs, path};
 use std::io::{BufWriter, Read, Write};
 use std::net::TcpStream;
-use std::os::windows::prelude::MetadataExt;
+//use std::os::windows::prelude::MetadataExt; THIS IS FOR WINDOWS
+use std::os::unix::fs::MetadataExt;
 
 use easytransfer_gui::TO_MEGABYTES;
 
@@ -15,7 +16,8 @@ pub async fn send_files(ip: String, folder: String, files: Vec<String>, port: us
     let metadata = file.metadata().unwrap();
 
     let file_name = path::Path::new(files.get(0).unwrap()).file_name().unwrap().to_str().unwrap().to_string();
-    let file_size = metadata.file_size() as usize;
+    let file_size = metadata.size() as usize;
+    // let file_size = metadata.file_size() as usize;   THIS IS FOR WINDOWS
     let name_size = file_name.len();
 
     println!("{:?}", file_name);
