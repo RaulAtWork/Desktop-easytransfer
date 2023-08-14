@@ -1,13 +1,11 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import {
-  validationSchema
-} from "../utils/validator";
+import { validationSchema } from "../utils/validator";
 import ErrorMessage from "./Error";
 import cn from "classnames";
 import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
-import { invoke } from '@tauri-apps/api/tauri'
+
 
 export function SendForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -15,15 +13,16 @@ export function SendForm() {
   function handleSubmit(values) {
     console.log("Form submitted");
     console.log(values);
+    //FIXME meterlo en un modulo
     let payload = {
-      ip : values.IP,
-      folder : values.folder,
-      files : ['D:/testeo.mp4'],
+      ip: values.IP,
+      folder: values.folder,
+      files: ["D:/testeo.mp4"],
       port: values.port,
-      chunk_size: values.chunkSize
+      chunk_size: values.chunkSize,
     };
-    invoke('send_files', payload);
-    //invoke('server');
+
+    //invZoke('server');
   }
 
   return (
@@ -45,10 +44,12 @@ export function SendForm() {
         handleChange,
         handleSubmit,
         setFieldValue,
-        resetForm
+        resetForm,
       }) => (
         <form className="form" on onSubmit={handleSubmit}>
-          <button type="button" onClick={resetForm}>Reset form</button>
+          <button type="button" onClick={resetForm}>
+            Reset form
+          </button>
           {/* Destination IP*/}
           <label htmlFor="IP">IP</label>
           <input
@@ -62,7 +63,7 @@ export function SendForm() {
             })}
           ></input>
           <ErrorMessage touched={touched.IP} error={errors.IP} />
-
+          {/*TODO move to receive mode*/}
           {/*Destination Folder*/}
           <label htmlFor="folder">Destination Folder </label>
           <input
@@ -134,7 +135,7 @@ export function SendForm() {
               <ErrorMessage touched={touched.port} error={errors.port} />
             </div>
           )}
-          <br/>
+          <br />
           <button type="submit" className="w-100 button-highlight">
             Send!
           </button>
