@@ -57,6 +57,12 @@ h1{
 .color-receive{
     color: purple /*FIXME: make it a var*/
 }
+.bg-color-transmission{
+    background-color: var(--color-higlight);
+}
+.bg-color-receive{
+    background-color: purple; /*FIXME: make it a var*/
+}
 
 /*TOGGLE BUTTON*/
 
@@ -97,7 +103,23 @@ h1{
   }
   
 
-/*OTHERS*/
+
+/*TAB GROUP*/
+
+.tab-group{
+    display: flex;
+}
+
+.tab > button{
+    width: 100%;
+    border-radius: 0px;
+}
+
+.tab > button.selected{
+    background-color: black;
+    border-bottom: 2px solid var(--color-higlight);
+}
+  /*OTHERS*/
 
 .icon-big{
     font-size: 2em;

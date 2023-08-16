@@ -1,22 +1,20 @@
 import { useState } from "react";
 import Send from "./pages/Send";
 import Receive from "./pages/Receive";
+import TabGroup, { Tab } from "./components/TabGroup";
 
 const MODE = { SEND: "send", RECEIVE: "receive" };
 
 function App() {
-  const [mode, setMode] = useState(MODE.SEND);
-
-  function changeMode(newMode) {
-    setMode(newMode)
-  }
   return (
-    <>
-      <button disabled={mode === MODE.SEND} onClick={()=> {changeMode(MODE.SEND)}}>Transmission mode</button>
-      <button disabled={mode === MODE.RECEIVE} onClick={()=> {changeMode(MODE.RECEIVE)}}>Receive mode</button>
-      {mode === MODE.SEND && <Send />}
-      {mode === MODE.RECEIVE && <Receive />}
-    </>
+    <TabGroup>
+      <Tab name="Transmission mode" labelColor="bg-color-transmission">
+        <Send />
+      </Tab>
+      <Tab name="Receive mode" labelColor="bg-color-receive">
+        <Receive />
+      </Tab>
+    </TabGroup>
   );
 }
 
