@@ -7,22 +7,11 @@ import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
 
 
-export function SendForm() {
+export function ReceiveForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   function handleSubmit(values) {
-    console.log("Form submitted");
-    console.log(values);
-    //FIXME meterlo en un modulo
-    let payload = {
-      ip: values.IP,
-      folder: values.folder,
-      files: ["D:/testeo.mp4"],
-      port: values.port,
-      chunk_size: values.chunkSize,
-    };
-
-    //invZoke('server');
+    //TODO 
   }
 
   return (
@@ -30,7 +19,6 @@ export function SendForm() {
       initialValues={{
         IP: "",
         folder: "",
-        files: [],
         port: 4040,
         chunkSize: 100,
       }}
@@ -50,8 +38,8 @@ export function SendForm() {
           <button type="button" onClick={resetForm}>
             Reset form
           </button>
-          {/* Destination IP*/}
-          <label htmlFor="IP">IP</label>
+          {/* Listenning IP*/}
+          <label htmlFor="IP">Listening IP</label>
           <input
             type="text"
             id="IP"
@@ -63,9 +51,9 @@ export function SendForm() {
             })}
           ></input>
           <ErrorMessage touched={touched.IP} error={errors.IP} />
-          {/*TODO move to receive mode*/}
-          {/*Destination Folder*/}
-          <label htmlFor="folder">Destination Folder </label>
+
+           {/*TODO Destination Folder*/}
+        <label htmlFor="folder">Destination Folder </label>
           <input
             id="folder"
             type="text"
@@ -77,21 +65,6 @@ export function SendForm() {
             })}
           ></input>
           <ErrorMessage touched={touched.folder} error={errors.folder} />
-
-          {/*Files to transfer*/}
-          <label htmlFor="files">Files to transfer</label>
-          <FilesInput
-            id="files"
-            setFileList={(newValue) => {
-              setFieldValue("files", newValue);
-            }}
-            className={cn({
-              "is-invalid": touched.files && errors.files,
-              "is-valid": touched.files && !errors.files,
-            })}
-            fileList={values.files}
-          />
-          <ErrorMessage touched={touched.files} error={errors.files} />
 
           {/*Advanced options*/}
 
@@ -137,7 +110,7 @@ export function SendForm() {
           )}
           <br />
           <button type="submit" className="w-100 button-highlight">
-            Send!
+            Start Listening!
           </button>
         </form>
       )}

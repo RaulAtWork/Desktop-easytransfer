@@ -27,7 +27,7 @@ export default function FilesInput({ id, className, fileList, setFileList }) {
         {fileList.map(
           (
             file,
-            index //TODO limit the heigh to x and use scrolling
+            index
           ) => (
             <li key={file.name + index}>
               <FontAwesomeIcon

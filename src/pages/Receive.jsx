@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ProgressBar from "../components/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSatelliteDish } from "@fortawesome/free-solid-svg-icons";
+import { ReceiveForm } from "../components/ReceiveForm";
 
 export default function Receive() {
   const [progress, setProgress] = useState(0);
@@ -15,6 +16,8 @@ export default function Receive() {
           className="icon-big ml-auto"
         />
       </div>
+      <ReceiveForm/>
+
       <div className="form">
         <ProgressBar progress={progress} />
         <input
@@ -29,6 +32,12 @@ export default function Receive() {
           }}
         ></input>
       </div>
+
+
+
+
+
+
     </>
   );
 }

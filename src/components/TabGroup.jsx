@@ -9,7 +9,7 @@ export default function TabGroup({ children }) {
       <ul className="tab-group">
         {Children.toArray(children).map((tab, index) => (
           <li className="tab" style={{width:tabWidth}} key={tab.props.name}>
-            <button type="button" className={`${tab.props.labelColor} ${index === currentTab && "selected"}`} onClick={() => setCurrentTab(index)}>
+            <button type="button" className={`${tab.props.labelColor} ${index !== currentTab && "selected"}`} onClick={() => setCurrentTab(index)}>
               {tab.props.name}
             </button>
           </li>
