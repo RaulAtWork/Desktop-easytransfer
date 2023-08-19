@@ -6,6 +6,7 @@ import cn from "classnames";
 import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
 import { transmissionEmitEvent } from "../logic/TauriHandler";
+import TestFilesInput from "./TestFilesInput";
 
 
 export function TransmitForm() {
@@ -17,12 +18,13 @@ export function TransmitForm() {
   }
 
   return (
+    <div>
     <Formik
       initialValues={{
         IP: "",
         folder: "",
         files: [],
-        port: 4040,
+        port: 3287,
         chunkSize: 100,
       }}
       validationSchema={validationSchema}
@@ -119,5 +121,7 @@ export function TransmitForm() {
         </form>
       )}
     </Formik>
+    <TestFilesInput></TestFilesInput>
+    </div>
   );
 }

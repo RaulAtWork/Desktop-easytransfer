@@ -1,0 +1,70 @@
+To achieve the requirement of retrieving the absolute path of multiple files in a Tauri app with React as the front end, you can use the `tauri` package's `invoke` feature to communicate between the Rust backend and the React front end.
+
+Here's a general outline of the steps you can follow:
+
+1. In your React component, create an input field and a button to trigger the file selection process.
+
+2. When the button is clicked, use the `invoke` function provided by the `tauri` package to send a message to the Rust backend.
+
+3. In the Rust backend, handle the message and open a file dialog to allow the user to select multiple files.
+
+4. After the user selects the files, retrieve the absolute paths of the selected files in the Rust backend.
+
+5. Send the absolute paths back to the React front end using the `tauri` package's `emit` function.
+
+6. In the React component, listen for the event emitted by the Rust backend and retrieve the absolute paths of the selected files.
+
+Here's an example code snippet to illustrate the process:
+
+```jsx
+// React component
+import React from 'react';
+import { invoke } from 'tauri/api/tauri';
+
+const FileInputComponent = () => {
+  const handleSelectFiles = async () => {
+    try {
+      const response = await invoke('selectFiles'); // Send message to Rust backend
+      const filePaths = response.filePaths; // Retrieve absolute paths of selected files
+      console.log(filePaths); // Do something with the file paths
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <input type="button" value="Select Files" onClick={handleSelectFiles} />
+    </div>
+  );
+};
+
+export default FileInputComponent;
+```
+
+```rust
+// Rust backend
+#[tauri::command]
+fn select_files() -> Result<Vec<String>, String> {
+    // Open file dialog to select multiple files
+    let file_dialog = tauri::api::dialog::OpenMultipleOptions::new().build().unwrap();
+    let result = tauri::api::dialog::open(file_dialog).unwrap();
+
+    // Retrieve absolute paths of selected files
+    if let Some(file_paths) = result {
+        let file_paths: Vec<String> = file_paths.into_iter().map(|path| path.to_string_lossy().to_string()).collect();
+        Ok(file_paths)
+    } else {
+        Err("No files selected.".to_string())
+    }
+}
+
+fn main() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![select_files])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+Make sure to install the `tauri` package and set up your Tauri project according to the Tauri documentation. This example demonstrates the basic idea of how you can implement the file selection feature in your Tauri app with React as the front end. You can customize and extend it according to your specific requirements.

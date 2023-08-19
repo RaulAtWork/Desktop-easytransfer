@@ -1,14 +1,28 @@
 use std::{fs, path};
+use std::cell::RefCell;
 use std::io::{BufWriter, Read, Write};
-use std::net::TcpStream;
+use std::net::{TcpStream, ToSocketAddrs};
+use std::ops::Deref;
+use once_cell::unsync::Lazy;
+#[cfg(target_os = "windows")]
 use std::os::windows::prelude::MetadataExt;
-//use std::os::unix::fs::MetadataExt; THIS IS FOR LINUX
+
+#[cfg(target_os = "linux")]
+use std::os::unix::fs::MetadataExt;
+use std::path::PathBuf;
+use std::rc::Rc;
+use std::string::ToString;
+use std::sync::{Arc, Mutex};
+use std::thread::sleep;
+use std::time::Duration;
+use tauri::api;
+use tauri::api::dialog::FileDialogBuilder;
 
 use easytransfer_gui::TO_MEGABYTES;
 
 // #[tauri::command]
 #[tauri::command(rename_all = "snake_case")]
-pub async fn send_files(ip: String, folder: String, files: Vec<String>, port: usize, chunkSize: usize) {
+pub async fn send_files(ip: String, files: Vec<String>, port: usize, chunkSize: usize) {
     let chunk_size = chunkSize * TO_MEGABYTES;
     println!("Sending file...");
     println!("{:?}", files);
@@ -16,8 +30,12 @@ pub async fn send_files(ip: String, folder: String, files: Vec<String>, port: us
     let metadata = file.metadata().unwrap();
 
     let file_name = path::Path::new(files.get(0).unwrap()).file_name().unwrap().to_str().unwrap().to_string();
-    // let file_size = metadata.size() as usize; THIS IS FOR LINUX
-    let file_size = metadata.file_size() as usize;
+
+    #[cfg(target_os = "linux")]
+        let file_size = metadata.size() as usize;
+    #[cfg(target_os = "windows")]
+        let file_size = metadata.file_size() as usize;
+
     let name_size = file_name.len();
 
     println!("{:?}", file_name);
@@ -49,7 +67,7 @@ pub async fn send_files(ip: String, folder: String, files: Vec<String>, port: us
                 break;
             }
         }
-        println!{"Read N: {}", nread};
+        println! {"Read N: {}", nread};
         let _ = buf_writer.write_all(&file_contents[..nread]);
         total_written += nread;
     }
@@ -61,4 +79,37 @@ pub async fn send_files(ip: String, folder: String, files: Vec<String>, port: us
     println!("{}", ack);
 
     println!("DONE!");
+}
+
+#[tauri::command]
+pub async fn select_files() -> Result<Vec<String>, String> {
+    // let res = Arc::new(Mutex::new(Err("No file selected".to_string())));
+    // let res_clone = res.clone();
+    //
+    // FileDialogBuilder::new().pick_files(move |file_paths| {
+    //     let mut locked_res = res_clone.lock().unwrap();
+    //     if file_paths.is_none() {
+    //         *locked_res = Err("No file was selected".to_string());
+    //     } else {
+    //         *locked_res = Ok(file_paths.unwrap().iter().map(|path| path.to_str().unwrap().to_string()).collect());
+    //     }
+    // })
+    //
+    // std::thread::sleep(Duration::from_millis(2800));
+    //
+    // let locked_res = res.lock().unwrap();
+    // locked_res.clone()
+    let (sender, receiver) = futures::channel::oneshot::channel();
+
+    FileDialogBuilder::new().pick_files(move |file_paths| {
+        if file_paths.is_none() {
+            sender.send(Err("No file was selected".to_string())).unwrap();
+        } else {
+            let paths = file_paths.unwrap().iter().map(|path| path.to_str().unwrap().to_string()).collect();
+            sender.send(Ok(paths)).unwrap();
+        }
+    });
+
+
+    receiver.await.unwrap()
 }

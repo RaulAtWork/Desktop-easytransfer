@@ -19,7 +19,7 @@ export function ReceiveForm() {
       initialValues={{
         IP: "",
         folder: "",
-        port: 4040,
+        port: 3287,
         chunkSize: 100,
       }}
       validationSchema={validationSchema}
