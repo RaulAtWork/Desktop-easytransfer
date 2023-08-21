@@ -36,16 +36,28 @@ function isValidPort(port) {
   else return false;
 }
 
-export const validationSchema = Yup.object().shape({
-  IP: Yup.string()
-    .required("IP address is required")
-    .test("IP Address Format", VALIDATION_MESSAGES.IPADDRESS, isValidIPAddress),
-  folder: Yup.string().required("Destination folder is required"),
+const IPValidator = Yup.string()
+  .required("IP address is required")
+  .test("IP Address Format", VALIDATION_MESSAGES.IPADDRESS, isValidIPAddress);
+
+const portValidator = Yup.number()
+  .required("A port must be provided.")
+  .test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort);
+
+const chunkSizeValidator = Yup.number()
+  .required("A chunk size must be provided")
+  .test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize);
+
+export const validationSchemaTransmission = Yup.object().shape({
+  IP: IPValidator,
   files: Yup.array().min(1, "Select at least one file"),
-  port: Yup.number()
-    .required("A port must be provided.")
-    .test("Port allowed?", VALIDATION_MESSAGES.PORT, isValidPort),
-  chunkSize: Yup.number()
-    .required("A chunk size must be provided")
-    .test("Chunk allowed?", VALIDATION_MESSAGES.CHUNK, isValidChunkSize),
+  port: portValidator,
+  chunkSize: chunkSizeValidator,
+});
+
+export const validationSchemaReceive = Yup.object().shape({
+  IP: IPValidator,
+  port: portValidator,
+  chunkSize: chunkSizeValidator,
+  folder: Yup.string().required("Destination folder is required"),
 });

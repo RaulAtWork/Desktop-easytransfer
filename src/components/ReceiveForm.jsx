@@ -1,17 +1,18 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { validationSchema } from "../utils/validator";
+import { validationSchemaTransmission } from "../utils/validator";
 import ErrorMessage from "./Error";
 import cn from "classnames";
 import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
+import { receiveEmitEvent } from "../logic/TauriHandler";
 
 
 export function ReceiveForm() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   function handleSubmit(values) {
-    //TODO 
+    receiveEmitEvent(values)
   }
 
   return (
@@ -22,7 +23,7 @@ export function ReceiveForm() {
         port: 3287,
         chunkSize: 100,
       }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchemaTransmission}
       onSubmit={handleSubmit}
     >
       {({
@@ -31,10 +32,9 @@ export function ReceiveForm() {
         touched,
         handleChange,
         handleSubmit,
-        setFieldValue,
         resetForm,
       }) => (
-        <form className="form" on onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <button type="button" onClick={resetForm}>
             Reset form
           </button>
@@ -61,7 +61,7 @@ export function ReceiveForm() {
             onChange={handleChange}
             className={cn({
               "is-invalid": touched.folder && errors.folder,
-              "is-valid": touched.files && !errors.folder,
+              "is-valid": touched.folder && !errors.folder,
             })}
           ></input>
           <ErrorMessage touched={touched.folder} error={errors.folder} />

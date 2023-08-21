@@ -1,12 +1,11 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { validationSchema } from "../utils/validator";
+import { validationSchemaTransmission } from "../utils/validator";
 import ErrorMessage from "./Error";
 import cn from "classnames";
 import FilesInput from "./FilesInput";
 import ToggleButton from "./ToggleButton";
 import { transmissionEmitEvent } from "../logic/TauriHandler";
-import TestFilesInput from "./TestFilesInput";
 
 
 export function TransmitForm() {
@@ -22,12 +21,11 @@ export function TransmitForm() {
     <Formik
       initialValues={{
         IP: "",
-        folder: "",
         files: [],
         port: 3287,
         chunkSize: 100,
       }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchemaTransmission}
       onSubmit={handleSubmit}
     >
       {({
@@ -39,7 +37,7 @@ export function TransmitForm() {
         setFieldValue,
         resetForm,
       }) => (
-        <form className="form" on onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <button type="button" onClick={resetForm}>
             Reset form
           </button>
@@ -121,7 +119,6 @@ export function TransmitForm() {
         </form>
       )}
     </Formik>
-    <TestFilesInput></TestFilesInput>
     </div>
   );
 }
